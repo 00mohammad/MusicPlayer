@@ -1,190 +1,164 @@
-// const playBtns = document.querySelectorAll(".play-btn");
-// const music = document.querySelector("audio");
-// const playIcon = document.querySelector(".play-icon");
-// const playButton = document.querySelector(".play-button");
-// const volumeCard = document.querySelector(".volume-card");
-// const volume = document.querySelector(".volume");
-// const currentTime = document.querySelector(".current-time");
-// const processBar = document.querySelector(".process-bar");
+// ================== Elements ==================
+const music = document.querySelector("audio");
+const playIcon = document.querySelector(".play-icon");
+const playButton = document.querySelector(".play-button");
+const volumeCard = document.querySelector(".volume-card");
+const volume = document.querySelector(".volume");
+const currentTime = document.querySelector(".current-time");
+const processBar = document.querySelector(".process-bar");
+const musicsContainer = document.querySelector(".musics-container");
+const volumeBtn = document.querySelector(".volume-handler button");
+const volumeIcon = volumeBtn.querySelector("i");
 
-// playBtns.forEach(function (playBtn) {
-//   playBtn.addEventListener("click", function () {
-//     const mainMusicSrc = playBtn.dataset.src;
-//     music.setAttribute("src", mainMusicSrc);
-//     music.play();
+// ================== Musics Data ==================
+const musics = [
+  {
+    id: 1,
+    title: "پژواک‌های نیمه‌شب - لونا اسکای",
+    src: "./public/audios/1.mp3",
+    cover: "./public/images/1.jpg",
+  },
+  {
+    id: 2,
+    title: "امواج فردا - افق نقره‌ای",
+    src: "./public/audios/2.mp3",
+    cover: "./public/images/2.jpg",
+  },
+  {
+    id: 3,
+    title: "خاکسترهای فروزان - دره اسکارلت",
+    src: "./public/audios/3.mp3",
+    cover: "./public/images/3.jpg",
+  },
+  {
+    id: 4,
+    title: "خاکسترهای فروزان - دره اسکارلت",
+    src: "./public/audios/4.mp3",
+    cover: "./public/images/4.jpg",
+  },
+  {
+    id: 5,
+    title: "زمزمه‌های باد - اورلیا نایت",
+    src: "./public/audios/5.mp3",
+    cover: "./public/images/5.png",
+  },
+  {
+    id: 6,
+    title: "تعقیب غروب - خیال طلایی",
+    src: "./public/audios/6.mp3",
+    cover: "./public/images/6.jpg",
+  },
+];
 
-//     if (playIcon.className.includes("fa-play")) {
-//       playIcon.classList.remove("fa-play");
-//       playIcon.classList.add("fa-pause");
-//     }
+// ================== Render Musics ==================
+function showMusics() {
+  musics.forEach((musicObj) => {
+    musicsContainer.insertAdjacentHTML(
+      "beforeend",
+      `
+      <article class="music-card">
+        <header>
+          <img src="${musicObj.cover}" alt="کاور موزیک" />
+          <div class="play-music">
+            <button class="play-btn" data-src="${musicObj.src}">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+        </header>
+        <main>
+          <p>${musicObj.title}</p>
+        </main>
+      </article>
+      `
+    );
+  });
+}
 
-//     playBtns.forEach(function (playBtn) {
-//       const playOrPauseIcon = playBtn.querySelector("i");
-//       playOrPauseIcon.classList.remove("fa-pause");
-//       playOrPauseIcon.classList.add("fa-play");
-//     });
+showMusics();
 
-//     const playOrPauseIcon = playBtn.querySelector("i");
-//     playOrPauseIcon.classList.remove("fa-play");
-//     playOrPauseIcon.classList.add("fa-pause");
-//   });
-// });
+// ================== Play Music ==================
+function resetPlayIcons() {
+  document.querySelectorAll(".play-btn i").forEach((icon) => {
+    icon.classList.remove("fa-pause");
+    icon.classList.add("fa-play");
+  });
+}
 
-// playButton.addEventListener("click", function () {
-//   if (playIcon.className.includes("fa-play")) {
-//     music.play();
-//     playIcon.classList.remove("fa-play");
-//     playIcon.classList.add("fa-pause");
-//   } else {
-//     music.pause();
-//     playIcon.classList.remove("fa-pause");
-//     playIcon.classList.add("fa-play");
-//   }
+musicsContainer.addEventListener("click", (e) => {
+  const playBtn = e.target.closest(".play-btn");
+  if (!playBtn) return;
 
-//   const musicPauseIcon = document.querySelector(".play-btn .fa-pause");
-//   if (musicPauseIcon) {
-//     musicPauseIcon.classList.remove("fa-pause");
-//     musicPauseIcon.classList.add("fa-play");
-//   }
-// });
+  const src = playBtn.dataset.src;
+  const icon = playBtn.querySelector("i");
 
-// volumeCard.addEventListener("click", function (event) {
-//   music.volume = event.offsetX / volumeCard.offsetWidth;
-//   volume.style.width = event.offsetX + "px";
-// });
+  if (music.src.includes(src) && !music.paused) {
+    music.pause();
+    icon.classList.replace("fa-pause", "fa-play");
+    playIcon.classList.replace("fa-pause", "fa-play");
+    return;
+  }
 
-// // حرکت نوار زمان
-// music.addEventListener("timeupdate", function () {
-//   if (!music.duration) return;
-//   const percent = (music.currentTime / music.duration) * 100;
-//   currentTime.style.width = percent + "%";
-// });
+  music.src = src;
+  music.play();
 
-// // کلیک روی نوار زمان
-// processBar.addEventListener("click", function (event) {
-//   if (!music.duration) return;
-//   const percent = event.offsetX / processBar.offsetWidth;
-//   music.currentTime = percent * music.duration;
-// });
+  resetPlayIcons();
+  icon.classList.replace("fa-play", "fa-pause");
+  playIcon.classList.replace("fa-play", "fa-pause");
+});
 
-// const musics = [
-//   {
-//     id: 1,
-//     title: "پژواک‌های نیمه‌شب - لونا اسکای",
-//     src: "./public/audios/1.mp3",
-//     cover: "./public/images/1.jpg",
-//   },
-//   {
-//     id: 2,
-//     title: "امواج فردا - افق نقره‌ای",
-//     src: "./public/audios/2.mp3",
-//     cover: "./public/images/2.jpg",
-//   },
-//   {
-//     id: 3,
-//     title: "خاکسترهای فروزان - دره اسکارلت",
-//     src: "./public/audios/3.mp3",
-//     cover: "./public/images/3.jpg",
-//   },
-//   {
-//     id: 4,
-//     title: "خاکسترهای فروزان - دره اسکارلت",
-//     src: "./public/audios/4.mp3",
-//     cover: "./public/images/4.jpg",
-//   },
-//   {
-//     id: 5,
-//     title: "زمزمه‌های باد - اورلیا نایت",
-//     src: "./public/audios/5.mp3",
-//     cover: "./public/images/5.png",
-//   },
-//   {
-//     id: 6,
-//     title: "تعقیب غروب - خیال طلایی",
-//     src: "./public/audios/6.mp3",
-//     cover: "./public/images/6.jpg",
-//   },
-// ];
+// ================== Main Play Button ==================
+playButton.addEventListener("click", () => {
+  if (!music.src) return;
 
-// function showMusics() {
-//   const musicsContainer = document.querySelector(".musics-container");
+  if (music.paused) {
+    music.play();
+    playIcon.classList.replace("fa-play", "fa-pause");
+  } else {
+    music.pause();
+    playIcon.classList.replace("fa-pause", "fa-play");
+    resetPlayIcons();
+  }
+});
 
-//   musics.forEach(function (musicObj) {
-//     musicsContainer.insertAdjacentHTML(
-//       "beforeend",
-//       `
-//       <article class="music-card">
-//         <header>
-//           <img src="${musicObj.cover}" alt="کاور موزیک" />
-//           <div class="play-music">
-//             <button class="play-music-btn play-btn" data-src="${musicObj.src}">
-//               <i class="fa-solid fa-play"></i>
-//             </button>
-//           </div>
-//         </header>
-//         <main>
-//           <p>${musicObj.title}</p>
-//         </main>
-//         <footer>
-//           <button class="bookmark">
-//             <i class="fa-regular fa-bookmark"></i>
-//           </button>
-//         </footer>
-//       </article>
-//       `
-//     );
-//   });
+// ================== Volume ==================
+let previousVolume = music.volume || 1; // برای ذخیره ولوم قبل از Mute
 
-//   const playBtns = document.querySelectorAll(".play-btn");
-//   const music = document.querySelector("audio");
-//   const playIcon = document.querySelector(".play-icon");
-//   const playButton = document.querySelector(".play-button");
-//   const volumeCard = document.querySelector(".volume-card");
-//   const volume = document.querySelector(".volume");
+// تنظیم صدا با کلیک روی نوار
+volumeCard.addEventListener("click", (e) => {
+  const percent = e.offsetX / volumeCard.offsetWidth;
+  music.volume = percent;
+  volume.style.width = percent * 100 + "%";
 
-//   playBtns.forEach(function (playBtn) {
-//     playBtn.addEventListener("click", function (event) {
-//       const mainMusicSrc = event.target.dataset.src;
-//       music.setAttribute("src", mainMusicSrc);
-//       music.play();
+  // اگر صدا قبلاً Mute بوده، آیکن برگرده
+  if (music.muted && percent > 0) {
+    music.muted = false;
+    volumeIcon.classList.replace("fa-volume-up-mute", "fa-volume-up");
+  }
+});
 
-//       if (playIcon.className.includes("fa-play")) {
-//         playIcon.classList.remove("fa-play");
-//         playIcon.classList.add("fa-pause");
-//       }
+// Mute / Unmute با کلیک روی آیکن
+volumeBtn.addEventListener("click", () => {
+  if (!music.muted) {
+    previousVolume = music.volume; // ذخیره ولوم قبل از Mute
+    music.muted = true;
+    volumeIcon.classList.replace("fa-volume-up", "fa-volume-up-mute");
+    volume.style.width = "0%";
+  } else {
+    music.muted = false;
+    volumeIcon.classList.replace("fa-volume-up-mute", "fa-volume-up");
+    volume.style.width = previousVolume * 100 + "%";
+  }
+});
 
-//       playBtns.forEach(function (playBtn) {
-//         const playOrPauseIcon = playBtn.querySelector("i");
-//         playOrPauseIcon.classList.remove("fa-pause");
-//         playOrPauseIcon.classList.add("fa-play");
-//       });
+// ================== Progress ==================
+music.addEventListener("timeupdate", () => {
+  if (!music.duration) return;
+  const percent = (music.currentTime / music.duration) * 100;
+  currentTime.style.width = percent + "%";
+});
 
-//       const playOrPauseIcon = playBtn.querySelector("i");
-//       playOrPauseIcon.classList.remove("fa-play");
-//       playOrPauseIcon.classList.add("fa-pause");
-//     });
-//   });
-
-//   playButton.addEventListener("click", function () {
-//     if (playIcon.className.includes("fa-play")) {
-//       music.play();
-//       playIcon.classList.remove("fa-play");
-//       playIcon.classList.add("fa-pause");
-//     } else {
-//       music.pause();
-//       playIcon.classList.remove("fa-pause");
-//       playIcon.classList.add("fa-play");
-//     }
-
-//     const musicPauseIcon = document.querySelector(".play-btn .fa-pause");
-//     if (musicPauseIcon) {
-//       musicPauseIcon.classList.remove("fa-pause");
-//       musicPauseIcon.classList.add("fa-play");
-//     }
-//   });
-
-//   volumeCard.addEventListener("click", function (event) {
-//     music.volume = event.offsetX / 100;
-//     volume.style.width = `${event.offsetX}px`;
-//   });
-// }
+processBar.addEventListener("click", (e) => {
+  if (!music.duration) return;
+  const percent = e.offsetX / processBar.offsetWidth;
+  music.currentTime = percent * music.duration;
+});
