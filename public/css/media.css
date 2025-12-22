@@ -1,31 +1,41 @@
+/* *Media* */
+
+/* xs - very small mobile */
+@media (min-width: 320px) {
+  .container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* sm */
 @media (min-width: 640px) {
   .container {
     max-width: 640px;
   }
 }
 
+/* md */
 @media (min-width: 768px) {
   .container {
     max-width: 768px;
   }
-
-  .musics-container {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  
 }
+
+/* lg */
 @media (min-width: 1024px) {
   .container {
     max-width: 1024px;
   }
 }
 
+/* xl */
 @media (min-width: 1280px) {
   .container {
     max-width: 1280px;
   }
 }
 
+/* 2xl */
 @media (min-width: 1536px) {
   .container {
     max-width: 1536px;
