@@ -2,9 +2,6 @@
 
 /* xs - very small mobile */
 @media (min-width: 320px) {
-  .container {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 /* sm */
