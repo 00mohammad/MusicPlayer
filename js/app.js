@@ -1,16 +1,4 @@
-// ================== Elements ==================
-const music = document.querySelector("audio");
-const playIcon = document.querySelector(".play-icon");
-const playButton = document.querySelector(".play-button");
-const volumeCard = document.querySelector(".volume-card");
-const volume = document.querySelector(".volume");
-const currentTime = document.querySelector(".current-time");
-const processBar = document.querySelector(".process-bar");
-const musicsContainer = document.querySelector(".musics-container");
-const volumeBtn = document.querySelector(".volume-handler button");
-const volumeIcon = volumeBtn.querySelector("i");
-
-// ================== Musics Data ==================
+// ================== DATA ==================
 const musics = [
   {
     id: 1,
@@ -50,8 +38,23 @@ const musics = [
   },
 ];
 
-// ================== Render Musics ==================
+const playlist = [];
+let currentMusicSrc = null;
+
+// ================== ELEMENTS ==================
+const music = document.querySelector("audio");
+const playButton = document.querySelector(".play-button");
+const playIcon = document.querySelector(".play-icon");
+const volumeCard = document.querySelector(".volume-card");
+const volume = document.querySelector(".volume");
+const processBar = document.querySelector(".process-bar");
+const currentTimeBar = document.querySelector(".current-time");
+
+// ================== SHOW MUSICS ==================
 function showMusics() {
+  const musicsContainer = document.querySelector(".musics-container");
+  musicsContainer.innerHTML = "";
+
   musics.forEach((musicObj) => {
     musicsContainer.insertAdjacentHTML(
       "beforeend",
@@ -60,7 +63,7 @@ function showMusics() {
         <header>
           <img src="${musicObj.cover}" alt="کاور موزیک" />
           <div class="play-music">
-            <button class="play-btn" data-src="${musicObj.src}">
+            <button class="play-music-btn play-btn" data-src="${musicObj.src}">
               <i class="fa-solid fa-play"></i>
             </button>
           </div>
@@ -68,97 +71,139 @@ function showMusics() {
         <main>
           <p>${musicObj.title}</p>
         </main>
+        <footer>
+          <button class="bookmark ${musicObj.isInPlaylist ? "bookmarked" : ""}"
+            onclick="addToPlaylist(${musicObj.id})">
+            <i class="fa-regular fa-bookmark"></i>
+          </button>
+        </footer>
       </article>
       `
     );
   });
+
+  initPlayButtons();
 }
 
-showMusics();
+// ================== PLAY BUTTONS ==================
+function initPlayButtons() {
+  const playBtns = document.querySelectorAll(".play-btn");
 
-// ================== Play Music ==================
-function resetPlayIcons() {
+  playBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const src = btn.dataset.src;
+
+      if (currentMusicSrc !== src) {
+        currentMusicSrc = src;
+        music.src = src;
+        music.play();
+        resetAllPlayIcons();
+        btn.querySelector("i").classList.replace("fa-play", "fa-pause");
+        currentTimeBar.style.width = "0%";
+      } else {
+        togglePlayPause();
+      }
+
+      syncMainPlayIcon();
+    });
+  });
+}
+
+// ================== MAIN PLAY BUTTON ==================
+playButton.addEventListener("click", togglePlayPause);
+
+function togglePlayPause() {
+  if (!music.src) return;
+
+  if (music.paused) {
+    music.play();
+  } else {
+    music.pause();
+  }
+
+  syncMainPlayIcon();
+  resetAllPlayIcons();
+}
+
+// ================== SYNC ICONS ==================
+function syncMainPlayIcon() {
+  if (music.paused) {
+    playIcon.classList.replace("fa-pause", "fa-play");
+  } else {
+    playIcon.classList.replace("fa-play", "fa-pause");
+  }
+}
+
+function resetAllPlayIcons() {
   document.querySelectorAll(".play-btn i").forEach((icon) => {
     icon.classList.remove("fa-pause");
     icon.classList.add("fa-play");
   });
 }
 
-musicsContainer.addEventListener("click", (e) => {
-  const playBtn = e.target.closest(".play-btn");
-  if (!playBtn) return;
-
-  const src = playBtn.dataset.src;
-  const icon = playBtn.querySelector("i");
-
-  if (music.src.includes(src) && !music.paused) {
-    music.pause();
-    icon.classList.replace("fa-pause", "fa-play");
-    playIcon.classList.replace("fa-pause", "fa-play");
-    return;
-  }
-
-  music.src = src;
-  music.play();
-
-  resetPlayIcons();
-  icon.classList.replace("fa-play", "fa-pause");
-  playIcon.classList.replace("fa-play", "fa-pause");
-});
-
-// ================== Main Play Button ==================
-playButton.addEventListener("click", () => {
-  if (!music.src) return;
-
-  if (music.paused) {
-    music.play();
-    playIcon.classList.replace("fa-play", "fa-pause");
-  } else {
-    music.pause();
-    playIcon.classList.replace("fa-pause", "fa-play");
-    resetPlayIcons();
-  }
-});
-
-// ================== Volume ==================
-let previousVolume = music.volume || 1; // برای ذخیره ولوم قبل از Mute
-
-// تنظیم صدا با کلیک روی نوار
-volumeCard.addEventListener("click", (e) => {
-  const percent = e.offsetX / volumeCard.offsetWidth;
-  music.volume = percent;
-  volume.style.width = percent * 100 + "%";
-
-  // اگر صدا قبلاً Mute بوده، آیکن برگرده
-  if (music.muted && percent > 0) {
-    music.muted = false;
-    volumeIcon.classList.replace("fa-volume-up-mute", "fa-volume-up");
-  }
-});
-
-// Mute / Unmute با کلیک روی آیکن
-volumeBtn.addEventListener("click", () => {
-  if (!music.muted) {
-    previousVolume = music.volume; // ذخیره ولوم قبل از Mute
-    music.muted = true;
-    volumeIcon.classList.replace("fa-volume-up", "fa-volume-up-mute");
-    volume.style.width = "0%";
-  } else {
-    music.muted = false;
-    volumeIcon.classList.replace("fa-volume-up-mute", "fa-volume-up");
-    volume.style.width = previousVolume * 100 + "%";
-  }
-});
-
-// ================== Progress ==================
+// ================== PROGRESS BAR ==================
 music.addEventListener("timeupdate", () => {
   if (!music.duration) return;
   const percent = (music.currentTime / music.duration) * 100;
-  currentTime.style.width = percent + "%";
+  currentTimeBar.style.width = `${percent}%`;
 });
 
 processBar.addEventListener("click", (e) => {
   if (!music.duration) return;
-  const percent = e.offsetX / processBar.offsetWidth;
-  music.currentTime = percent * music.duration;
+  const width = processBar.offsetWidth;
+  music.currentTime = (e.offsetX / width) * music.duration;
 });
+
+// ================== VOLUME ==================
+volumeCard.addEventListener("click", (e) => {
+  const width = volumeCard.offsetWidth;
+  const vol = e.offsetX / width;
+  music.volume = Math.min(Math.max(vol, 0), 1);
+  volume.style.width = `${vol * 100}%`;
+});
+
+// ================== MUSIC END ==================
+music.addEventListener("ended", () => {
+  playIcon.classList.replace("fa-pause", "fa-play");
+  currentTimeBar.style.width = "0%";
+  resetAllPlayIcons();
+});
+
+// ================== PLAYLIST ==================
+function addToPlaylist(id) {
+  if (playlist.some((m) => m.id === id)) return;
+
+  const musicItem = musics.find((m) => m.id === id);
+  playlist.push(musicItem);
+  musicItem.isInPlaylist = true;
+
+  showPlaylist();
+  showMusics();
+}
+
+function showPlaylist() {
+  const playlistContainer = document.querySelector(".playlist");
+  playlistContainer.innerHTML = "";
+
+  playlist.forEach((music) => {
+    playlistContainer.insertAdjacentHTML(
+      "beforeend",
+      `
+      <article class="music-card">
+        <header>
+          <img src="${music.cover}" />
+          <button class="play-btn" data-src="${music.src}">
+            <i class="fa-solid fa-play"></i>
+          </button>
+        </header>
+        <main><p>${music.title}</p></main>
+      </article>
+      `
+    );
+  });
+
+  initPlayButtons();
+}
+
+// ================== INIT ==================
+showMusics();
