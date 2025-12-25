@@ -1,4 +1,5 @@
 // ================== DATA ==================
+
 const musics = [
   {
     id: 1,
@@ -42,6 +43,7 @@ const playlist = [];
 let currentMusicSrc = null;
 
 // ================== ELEMENTS ==================
+
 const music = document.querySelector("audio");
 const playButton = document.querySelector(".play-button");
 const playIcon = document.querySelector(".play-icon");
@@ -51,6 +53,7 @@ const processBar = document.querySelector(".process-bar");
 const currentTimeBar = document.querySelector(".current-time");
 
 // ================== SHOW MUSICS ==================
+
 function showMusics() {
   const musicsContainer = document.querySelector(".musics-container");
   musicsContainer.innerHTML = "";
@@ -86,6 +89,7 @@ function showMusics() {
 }
 
 // ================== PLAY BUTTONS ==================
+
 function initPlayButtons() {
   const playBtns = document.querySelectorAll(".play-btn");
 
@@ -110,6 +114,7 @@ function initPlayButtons() {
 }
 
 // ================== MAIN PLAY BUTTON ==================
+
 playButton.addEventListener("click", togglePlayPause);
 
 function togglePlayPause() {
@@ -126,6 +131,7 @@ function togglePlayPause() {
 }
 
 // ================== SYNC ICONS ==================
+
 function syncMainPlayIcon() {
   if (music.paused) {
     playIcon.classList.replace("fa-pause", "fa-play");
@@ -142,6 +148,7 @@ function resetAllPlayIcons() {
 }
 
 // ================== PROGRESS BAR ==================
+
 music.addEventListener("timeupdate", () => {
   if (!music.duration) return;
   const percent = (music.currentTime / music.duration) * 100;
@@ -155,6 +162,7 @@ processBar.addEventListener("click", (e) => {
 });
 
 // ================== VOLUME ==================
+
 volumeCard.addEventListener("click", (e) => {
   const width = volumeCard.offsetWidth;
   const vol = e.offsetX / width;
@@ -163,6 +171,7 @@ volumeCard.addEventListener("click", (e) => {
 });
 
 // ================== MUSIC END ==================
+
 music.addEventListener("ended", () => {
   playIcon.classList.replace("fa-pause", "fa-play");
   currentTimeBar.style.width = "0%";
@@ -170,6 +179,7 @@ music.addEventListener("ended", () => {
 });
 
 // ================== PLAYLIST ==================
+
 function addToPlaylist(id) {
   if (playlist.some((m) => m.id === id)) return;
 
@@ -206,4 +216,5 @@ function showPlaylist() {
 }
 
 // ================== INIT ==================
+
 showMusics();
