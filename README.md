@@ -14,7 +14,7 @@ Enjoy your favorite tracks directly in the browser with a sleek, modern interfac
 
 ### Video Preview
 
-[![Watch the video](/public/Movie/Screen%20Recording%202025-12-26%20020924.mp4)]
+[![Watch the video](/public/Movie/Screen%20Recording%202025-12-26%20020924.mp4)](/public/Movie/Screen%20Recording%202025-12-26%20020924.mp4)
 
 > Click the image to watch a short demo of MusicPlayer in action.
 
